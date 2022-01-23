@@ -1,11 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
+using Unity.Jobs;
 using UnityEngine;
 public enum CharacterState {
     GROUNDED,
     JUMPING,
     FALLING,
-    SLIDING
+    SLIDING,
+    WALLRUN
+}
+public enum AttackState {
+    RED,
+    BLUE,
+    NONE
 }
 public enum AnimationState {
     IDLE,
@@ -19,7 +27,7 @@ public enum AnimationState {
 public class CharacterMovement : MonoBehaviour
 {
     CharacterController controller;
-    Animator animator;
+    public Animator animator;
     public float speed = 3;
     public float rotationSpeed = 4;
     public float jumpHeight = 200;
@@ -29,17 +37,24 @@ public class CharacterMovement : MonoBehaviour
     public Vector3 currentRotation = Vector3.zero;
     public CharacterState characterState;
     public AnimationState animationState;
+    public AttackState attackState;
     public float standingHeight;
     public Vector3 standingCenter;
     public float slidingHeight;
     public Vector3 slidingCenter;
-    public float slidingDuration = 3;
+    public float slidingDuration = 0.01f;
     public float slidingTimer;
+    public float fallingThreshold = 0.6f;
+    public bool canSlide = true;
+    public bool canWallrun = true;
+    public Sword sword1;
+    public Sword sword2;
     // Start is called before the first frame update
     void Start()
     {
         controller = gameObject.GetComponent<CharacterController>();
-        animator = gameObject.GetComponent<Animator>();
+        if(!animator)
+         animator = gameObject.GetComponent<Animator>();
         standingHeight = controller.height;
         standingCenter = controller.center;
         slidingTimer = slidingDuration;
@@ -51,62 +66,54 @@ public class CharacterMovement : MonoBehaviour
         if(controller){
             handleMovement();
             handleAnimation();
-            if(controller.isGrounded && characterState != CharacterState.SLIDING)
-                characterState = CharacterState.GROUNDED;
+            handleAttack();
         }
     }
 
     void handleMovement() {
+        //Apply Gravity to check it the character is actually grounded or not
+        // currentMovement = new Vector3(0, gravity * Time.deltaTime , 0);
+        // controller.Move(currentMovement * Time.deltaTime);
+        if(characterState == CharacterState.SLIDING || characterState == CharacterState.WALLRUN)
+        {
+            Debug.Log("Either sliding or Wallrunning right now");
+        }
+        if (controller.isGrounded) {
+            characterState = CharacterState.GROUNDED;
+        }
+        else {
+            characterState = CharacterState.FALLING;
+        }
+        //Read Input
         float vInput = Input.GetAxis("Vertical");
         float hInput = Input.GetAxis("Horizontal");
-        // float gravityDelta = gravity * Time.deltaTime;
-        // if(state == CharacterState.GROUNDED) {
-        //     currentMovement = new Vector3(horizontal, 0 , vertical) * speed;
-        //     if(Input.GetAxis("Jump") != 0)
-        //     {
-        //         currentMovement = new Vector3(currentMovement.x,jumpHeight,currentMovement.z);
-        //         state = CharacterState.JUMPING;
-        //     }
-        // }
-        // else {
-        //     if(currentMovement.y > -terminalVelocity)
-        //         currentMovement = new Vector3 (currentMovement.x,currentMovement.y-gravityDelta,currentMovement.z);
-        //     if(currentMovement.y <= -terminalVelocity)
-        //         currentMovement = new Vector3 (currentMovement.x,-gravityDelta,currentMovement.z);
-        // }
-        // controller.Move(currentMovement * (Time.deltaTime*1.5f));
         if(characterState == CharacterState.GROUNDED) {
-            if(Input.GetAxis("Slide") != 0) {
-                characterState = CharacterState.SLIDING;
-                slidingTimer = slidingDuration;
-                controller.height = slidingHeight;
-                controller.center = slidingCenter;
-            }
+            // if(Input.GetAxis("Slide") != 0) {
+            //     characterState = CharacterState.SLIDING;
+            //     slidingTimer = slidingDuration;
+            //     controller.height = slidingHeight;
+            //     controller.center = slidingCenter;
+            // }
             currentMovement = new Vector3(hInput, 0 , vInput) * speed;
-            currentRotation = transform.up * rotationSpeed * hInput;
             if(Input.GetAxis("Jump") != 0)
             {
                 currentMovement.y = jumpHeight;
                 characterState = CharacterState.JUMPING;
             }
         }
-        if (characterState == CharacterState.SLIDING) {
-            slidingTimer -= Time.deltaTime;
-            if (slidingTimer <= 0) {
-                characterState = CharacterState.FALLING;
-                controller.height = standingHeight;
-                controller.center = standingCenter;
-            }
-        }
+        // if (characterState == CharacterState.SLIDING) {
+        //     slidingTimer -= Time.deltaTime;
+        //     currentMovement.y -= (gravity/2) * Time.deltaTime;
+        //     if (slidingTimer <= 0) {
+        //         characterState = CharacterState.FALLING;
+        //         controller.height = standingHeight;
+        //         controller.center = standingCenter;
+        //     }
+        // }
         currentMovement.y -= gravity * Time.deltaTime;
         if (currentMovement.y <= -terminalVelocity)
             currentMovement.y = -terminalVelocity;
         controller.Move(currentMovement * Time.deltaTime);
-        currentRotation = new Vector3(currentMovement.x, 0 , currentMovement.z);
-        // transform.Rotate(currentRotation * Time.deltaTime);
-        if (currentMovement.y <= 0 && characterState != CharacterState.SLIDING) {
-            characterState = CharacterState.FALLING;
-        }
     }
     void handleAnimation() {
         if (characterState == CharacterState.SLIDING) {
@@ -115,9 +122,12 @@ public class CharacterMovement : MonoBehaviour
         else if(currentMovement.y > 0) {
             animationState = AnimationState.JUMP;
         }
-        else if(currentMovement.y < -0.75f && characterState != CharacterState.GROUNDED) {
+        else if(currentMovement.y < -fallingThreshold && characterState != CharacterState.GROUNDED) {
             animationState = AnimationState.FALL;
         }
+        // else if(animationState == AnimationState.IDLE && characterState != CharacterState.GROUNDED) {
+        //     animationState = AnimationState.FALL;
+        // }
         else if(animationState == AnimationState.FALL) {
             animationState = AnimationState.LAND;
         }
@@ -153,6 +163,29 @@ public class CharacterMovement : MonoBehaviour
             case AnimationState.SLIDE:
             animator.SetBool("slide", true);
             break;
+        }
+    }
+    void handleAttack() {
+        if(animator.GetBool("sword_idle") == true) {
+            attackState = AttackState.NONE;
+            animator.SetBool("attack1", false);
+            animator.SetBool("attack2", false);
+            sword1.SetActiveState(false);
+            sword2.SetActiveState(false);
+        }
+        if (attackState == AttackState.NONE) {
+            if(Input.GetAxis("Fire1") != 0) {
+                animator.SetBool("attack1", true);
+                animator.SetBool("sword_idle", false);
+                attackState = AttackState.RED;
+                sword1.SetActiveState(true);
+            }
+            else if(Input.GetAxis("Fire2") != 0) {
+                animator.SetBool("attack2", true);
+                animator.SetBool("sword_idle", false);
+                attackState = AttackState.BLUE;
+                sword2.SetActiveState(true);
+            }
         }
     }
 }
