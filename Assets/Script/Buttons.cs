@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Buttons : MonoBehaviour
 {
@@ -17,7 +18,7 @@ public class Buttons : MonoBehaviour
     }
 	
 	public void StartGame(){
-		SceneManager.LoadScene(/*scenename*/); //Add Name of Game Scene
+		// SceneManager.LoadScene(/*scenename*/); //Add Name of Game Scene
 	}
 	
 	public void ShowScreen(GameObject _showenScreen){
