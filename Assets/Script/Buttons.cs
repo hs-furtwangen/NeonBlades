@@ -18,7 +18,7 @@ public class Buttons : MonoBehaviour
     }
 	
 	public void StartGame(){
-		// SceneManager.LoadScene(/*scenename*/); //Add Name of Game Scene
+		 SceneManager.LoadScene("Game"); //Add Name of Game Scene
 	}
 	
 	public void ShowScreen(GameObject _showenScreen){
