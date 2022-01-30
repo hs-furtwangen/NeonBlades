@@ -3,8 +3,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 #endif
 
-namespace StarterAssets
-{
+// namespace StarterAssets
+// {
 	public class StarterAssetsInputs : MonoBehaviour
 	{
 		[Header("Character Input Values")]
@@ -14,6 +14,7 @@ namespace StarterAssets
 		public bool sprint;
 		public bool attack1;
 		public bool attack2;
+		public bool gamePaused;
 
 		[Header("Movement Settings")]
 		public bool analogMovement;
@@ -91,12 +92,17 @@ namespace StarterAssets
 		{
 			attack2 = newAttack2State;
 		}
+		public void PauseGame(bool pauseState) {
+			gamePaused = pauseState;
+			SetCursorState(!pauseState);
+		}
 
 #if !UNITY_IOS || !UNITY_ANDROID
 
 		private void OnApplicationFocus(bool hasFocus)
 		{
-			SetCursorState(cursorLocked);
+			if(!gamePaused)
+				SetCursorState(cursorLocked);
 		}
 
 		private void SetCursorState(bool newState)
@@ -108,4 +114,4 @@ namespace StarterAssets
 
 	}
 	
-}
+// }

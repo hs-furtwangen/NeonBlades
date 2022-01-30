@@ -6,10 +6,12 @@ using UnityEngine.UI;
 
 public class GameMaster : MonoBehaviour
 {
+	public static GameMaster _instance;
 	public Text timerTextGame;
 	public Text timerTextFinish;
 	public GameObject pauseScreen;
 	public GameObject finishScreen;
+	public StarterAssetsInputs inputSystem;
  	public bool gamePaused = false;
 
 	bool gameFinished = false;
@@ -19,7 +21,9 @@ public class GameMaster : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+		if(GameMaster._instance == null) {
+			GameMaster._instance = this;
+		}
     }
 
     // Update is called once per frame
@@ -54,6 +58,7 @@ public class GameMaster : MonoBehaviour
 	public void PauseGame(){
 		gamePaused = !gamePaused;
 		pauseScreen.SetActive (gamePaused);
+		inputSystem.PauseGame(gamePaused);
 	}
 
 	public void StopGame(){
