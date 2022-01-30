@@ -23,9 +23,10 @@ public class Sword : MonoBehaviour
             {
                 Target target = collision.gameObject.GetComponent<Target>(); 
                 if(this.color != target.color){
+                    target.DestroyTarget();
                     if(collision.gameObject.GetComponent<Slice>() != null)
-                    {
-                        KatanaSlice();           
+                    {                          
+                        KatanaSlice();
                     }
                 }
             }
