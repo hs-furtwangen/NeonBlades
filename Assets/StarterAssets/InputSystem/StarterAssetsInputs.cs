@@ -14,7 +14,6 @@ namespace StarterAssets
 		public bool sprint;
 		public bool attack1;
 		public bool attack2;
-		public bool slice;
 
 		[Header("Movement Settings")]
 		public bool analogMovement;
@@ -48,14 +47,15 @@ namespace StarterAssets
 		{
 			SprintInput(value.isPressed);
 		}
-		public void OnAttack1(InputValue value){
+
+		public void OnAttack1(InputValue value)
+		{
 			Attack1Input(value.isPressed);
 		}
-		public void OnAttack2(InputValue value){
+
+		public void OnAttack2(InputValue value)
+		{
 			Attack2Input(value.isPressed);
-		}
-		public void OnSlice(InputValue value){
-			SliceInput(value.isPressed);
 		}
 #else
 	// old input sys if we do decide to have it (most likely wont)...
@@ -81,17 +81,15 @@ namespace StarterAssets
 		{
 			sprint = newSprintState;
 		}
+
 		public void Attack1Input(bool newAttack1State)
 		{
 			attack1 = newAttack1State;
 		}
+		
 		public void Attack2Input(bool newAttack2State)
 		{
 			attack2 = newAttack2State;
-		}
-		public void SliceInput(bool newSliceState)
-		{
-			slice = newSliceState;
 		}
 
 #if !UNITY_IOS || !UNITY_ANDROID

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Sword : MonoBehaviour
 {
-    
+    public color color;
     public bool activeState = false;
     // Start is called before the first frame update
     void Start()
@@ -19,10 +19,29 @@ public class Sword : MonoBehaviour
     }
     void OnCollisionExit(Collision collision) {
         if(activeState) {
-            if(collision.gameObject.GetComponent<Slice>() != null)
+            if(collision.gameObject.GetComponent<Target>() != null)
             {
+                Target target = collision.gameObject.GetComponent<Target>(); 
+                if(this.color != target.color){
                     if(collision.gameObject.GetComponent<Slice>() != null)
-    {
+                    {
+                        KatanaSlice();           
+                    }
+                }
+            }
+            else {
+                if(collision.gameObject.GetComponent<Slice>() != null)
+                {
+                    KatanaSlice();           
+                }
+            }
+        }
+    }
+
+    public void SetActiveState (bool state) {
+        this.activeState = state;
+    }
+    public void KatanaSlice() {
         var hitbox = this.GetComponent<Collider>();
         var center = hitbox.bounds.center;
         var extents = hitbox.bounds.extents;
@@ -45,15 +64,5 @@ public class Sword : MonoBehaviour
                 sliceObj.ComputeSlice(this.transform.up, this.transform.position);
             }
         }
-    }
-            }
-        }
-    }
-
-    public void SetActiveState (bool state) {
-        this.activeState = state;
-    }
-    public void KatanaSlice() {
-
     }
 }

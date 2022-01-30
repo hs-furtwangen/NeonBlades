@@ -44,7 +44,7 @@
                 {
                     "name": "Attack1",
                     "type": "PassThrough",
-                    "id": "4786c5a0-538f-4ffe-9f15-c39495466000",
+                    "id": "898dd15d-848e-436c-9537-79fcead216b4",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -53,16 +53,7 @@
                 {
                     "name": "Attack2",
                     "type": "PassThrough",
-                    "id": "38b24d17-7aab-4a82-b7c2-811971de9b24",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Slice",
-                    "type": "PassThrough",
-                    "id": "35c06ad7-06ba-4ef4-ba13-85f8ad621951",
+                    "id": "0b93d9eb-944e-490e-9f21-c07b06512bca",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -238,7 +229,7 @@
                 {
                     "name": "",
                     "id": "c8fcd86e-dcfd-4f88-8e93-b638cdbf3320",
-                    "path": "<Gamepad>/leftStickPress",
+                    "path": "<Gamepad>/leftTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
@@ -248,7 +239,7 @@
                 },
                 {
                     "name": "",
-                    "id": "0d7d9504-af31-4267-87f8-792dcb17469d",
+                    "id": "958c4203-68ea-4572-af7a-da5cc278c9e1",
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
@@ -259,56 +250,12 @@
                 },
                 {
                     "name": "",
-                    "id": "6e0a265d-60c1-4ddd-a3c4-afdc0f2d6080",
-                    "path": "<Gamepad>/buttonNorth",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Gamepad",
-                    "action": "Attack1",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "d5c728c4-2200-468d-bfbb-77453feede08",
+                    "id": "065b07e5-b47c-42eb-8ce1-a275ce9d6f38",
                     "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "KeyboardMouse",
                     "action": "Attack2",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "0321cf4f-3d6f-409a-9372-2d66b9d5ae36",
-                    "path": "<Gamepad>/buttonEast",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Gamepad",
-                    "action": "Attack2",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "0db663ef-dc6b-4c62-bb20-fdf742f65587",
-                    "path": "<Keyboard>/leftCtrl",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "KeyboardMouse",
-                    "action": "Slice",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "9fabd4cf-8d5d-4fff-8854-d5d5523601c3",
-                    "path": "<Gamepad>/rightShoulder",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Gamepad",
-                    "action": "Slice",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
